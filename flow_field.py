@@ -18,8 +18,8 @@ plotting_kwargs = {
 }
 
 
-def plot_flow(psi: tp.Callable[[np.ndarray, np.ndarray], np.ndarray], X: np.ndarray,
-              Y: np.ndarray, **kwargs) -> plt.Figure:
+def plot_flow_from_stream_function(psi: tp.Callable[[np.ndarray, np.ndarray], np.ndarray], X: np.ndarray,
+                                   Y: np.ndarray, **kwargs) -> plt.Figure:
     fig = plt.figure(figsize=kwargs.get("FIGURE_SIZE", (12, 12)), dpi=kwargs.get("DPI", 100))
     CS = plt.contour(X, Y, psi(X, Y), kwargs.get("CONTOR_LEVELS", 50))
     if kwargs.get("CONTOUR_LABELS"):
@@ -74,9 +74,9 @@ class FlowField:
     def stream_function(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         return sum([flow.stream_function(x, y) for flow in self.flows])
 
-    def plot(self, x: np.ndarray, y: np.ndarray) -> plt.Figure:
+    def plot_flow_from_stream_function(self, x: np.ndarray, y: np.ndarray) -> plt.Figure:
         X, Y = np.meshgrid(x, y)
-        return plot_flow(self.stream_function, X, Y, **self.plotting_kwargs)
+        return plot_flow_from_stream_function(self.stream_function, X, Y, **self.plotting_kwargs)
 
     def velocity(self, x: np.ndarray, y: np.ndarray) -> tp.Tuple[np.ndarray, np.ndarray]:
         flow_velocities = [flow.velocity(x, y) for flow in self.flows]

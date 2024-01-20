@@ -27,7 +27,7 @@ class UniformFlow(ElementaryFlow):
 class NonUniformFlow(ElementaryFlow):
     x_pos: float
     y_pos: float
-    mask_tol: float = 10e-6
+    mask_tol: float = 1e-6
 
     @abstractmethod
     def stream_function(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
