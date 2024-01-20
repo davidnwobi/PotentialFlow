@@ -54,12 +54,12 @@ class NonUniformFlow(ElementaryFlow):
 class Source(NonUniformFlow):
     strength: float = 0.0
 
-    def stream_function(self, x: np.ndarray, y: np.ndarray):
+    def stream_function(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         mask = self.theta_mask(x, y)
         x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
         return self.strength / (2 * np.pi) * self.theta(x, y)
 
-    def velocity(self, x: np.ndarray, y: np.ndarray):
+    def velocity(self, x: np.ndarray, y: np.ndarray) -> tp.Tuple[np.ndarray, np.ndarray]:
         mask = self.r_squared_mask(x, y)
         x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
 
@@ -75,27 +75,20 @@ class Vortex(NonUniformFlow):
     circulation: float = 0.0
 
     def stream_function(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        r_squared_mask = (x - self.x_pos) ** 2 + (y - self.y_pos) ** 2
+        mask = self.r_squared_mask(x, y)
 
-        def mask():
-            return r_squared_mask < self.mask_tol
+        x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
 
-        x, y = (np.ma.masked_where(mask(), x), np.ma.masked_where(mask(), y))
-
-        r = np.log(np.sqrt((x - self.x_pos) ** 2 + (y - self.y_pos) ** 2))
-        return self.circulation / (2 * np.pi) * r
+        return self.circulation / (2 * np.pi) * np.log(np.sqrt(self.r_squared(x, y)))
 
     def velocity(self, x: np.ndarray, y: np.ndarray) -> tp.Tuple[np.ndarray, np.ndarray]:
-        r_squared_mask = (x - self.x_pos) ** 2 + (y - self.y_pos) ** 2
+        mask = self.r_squared_mask(x, y)
 
-        def mask():
-            return r_squared_mask < self.mask_tol
+        x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
 
-        x, y = (np.ma.masked_where(mask(), x), np.ma.masked_where(mask(), y))
-
-        r = np.sqrt((x - self.x_pos) ** 2 + (y - self.y_pos) ** 2)
-        u = self.circulation / (2 * np.pi) * (1 / r) * ((y - self.y_pos) / r)
-        v = -self.circulation / (2 * np.pi) * (1 / r) * ((x - self.x_pos) / r)
+        r_squared = self.r_squared(x, y)
+        u = self.circulation / (2 * np.pi) * ((y - self.y_pos) / r_squared)
+        v = -self.circulation / (2 * np.pi) * ((x - self.x_pos) / r_squared)
 
         return u, v
 
@@ -109,14 +102,14 @@ class Doublet(NonUniformFlow):
         x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
 
         r_squared = self.r_squared(x, y)
-        return -self.kappa / (2 * np.pi) * ((y-self.y_pos) / r_squared)
+        return -self.kappa / (2 * np.pi) * ((y - self.y_pos) / r_squared)
 
     def velocity(self, x: np.ndarray, y: np.ndarray) -> tp.Tuple[np.ndarray, np.ndarray]:
-
         mask = self.r_squared_mask(x, y)
         x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
 
         r_squared_squared = self.r_squared(x, y) ** 2
-        U = -self.kappa / (2 * np.pi) * (x-self.x_pos+y-self.y_pos) * (x-self.x_pos-y+self.y_pos)/ (r_squared_squared)
-        V = -self.kappa / (2 * np.pi) * 2 * (x-self.x_pos)*(y-self.y_pos)/ (r_squared_squared)
+        U = -self.kappa / (2 * np.pi) * (x - self.x_pos + y - self.y_pos) * (x - self.x_pos - y + self.y_pos) / (
+            r_squared_squared)
+        V = -self.kappa / (2 * np.pi) * 2 * (x - self.x_pos) * (y - self.y_pos) / (r_squared_squared)
         return U, V
