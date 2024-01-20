@@ -1,4 +1,4 @@
-Potential Flow Visualizer
+# Potential Flow Visualizer
 
 This is a simple potential flow visualizer. The program allows you to experiment with superposition of different potential flow fields. The program is written in Python with numpy and matplotlib for visualization.
 
