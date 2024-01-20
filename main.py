@@ -25,7 +25,7 @@ plotting_kwargs = {
 
 x = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num=NO_OF_POINTS)
 y = np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num=NO_OF_POINTS)
-
+#
 velocity = 10
 radius = 1
 kappa = 2 * np.pi * velocity * radius ** 2 # Known solution for a cylinder
@@ -36,7 +36,36 @@ u1 = elementary_flows.UniformFlow(horizontal_vel=velocity * np.cos(alpha), verti
 v1 = elementary_flows.Vortex(x_pos=0, y_pos=0, circulation=vortex_strength)
 d1 = elementary_flows.Doublet(x_pos=0, y_pos=0, kappa=kappa)
 
+# flow = FlowField([v1, u1, d1], **plotting_kwargs)
+# flow.plot_flow_from_stream_function(x, y).show()
+# flow.plot_velocity(x, y).show()
 
-flow = FlowField([v1, u1, d1], **plotting_kwargs)
+# Rankine Oval
+plotting_kwargs2 = {
+    'CONTOR_LEVELS': 50,
+}
+v1 = elementary_flows.Source(x_pos=-2, y_pos=0, strength=10)
+v2 = elementary_flows.Source(x_pos=2, y_pos=0, strength=-10)# Negative strength is a sink
+u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
+
+flow = FlowField([v1, v2, u1], **plotting_kwargs2)
 flow.plot_flow_from_stream_function(x, y).show()
 flow.plot_velocity(x, y).show()
+
+
+
+# Kelvin's Oval
+#
+# plotting_kwargs2 = {
+#     'CONTOR_LEVELS': 50,
+# }
+# v1 = elementary_flows.Vortex(x_pos=0, y_pos=2, circulation=10)
+# v2 = elementary_flows.Vortex(x_pos=0, y_pos=-2, circulation=-10)
+# u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
+# flow = FlowField([v1, v2, u1], **plotting_kwargs2)
+# flow.plot_flow_from_stream_function(x, y).show()
+# flow.plot_velocity(x, y).show()
+
+
+
+

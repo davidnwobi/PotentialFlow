@@ -1,6 +1,6 @@
 # Potential Flow Visualizer
 
-This is a simple potential flow visualizer. The program allows you to experiment with superposition of different potential flow fields. The program is written in Python with numpy and matplotlib for visualization.
+This is a simple potential flow visualizer. The program allows you to experiment with the superposition of different potential flow fields. The program is written in Python using numpy and matplotlib for visualization.
 
 The basic elementary flows provided are:
 
@@ -11,14 +11,14 @@ The basic elementary flows provided are:
 - Doublet
 
 ## Usage
-These are some constants that provide a default configuration for the plotting. These can change these values as desired. The values are self-explanatory.
-Ultimately, the plot function returns a matplotlib figure object. That can be further manipulated to suit your needs.
+These are some constants that provide a default configuration for the plotting. These can be changed as desired. The values are self-explanatory.
+Ultimately, the plot function returns a matplotlib figure object so that can be further manipulated to suit your needs.
 ```python
 import numpy as np
 import elementary_flows
 from flow_field import FlowField
 
-NO_OF_POINTS = 1000
+NO_OF_POINTS = 1000 # Number of points in the grid. More points means better resolution but slower computation
 X_POS_LIMIT = 5
 Y_POS_LIMIT = 5
 X_NEG_LIMIT = -5
@@ -62,9 +62,56 @@ flow.plot_flow_from_stream_function(x, y).show()
 flow.plot_velocity(x, y).show()
 ```
 
-## Result
+### Result
 ### Streamline Contour Plot
 ![img.png](ContorPlot.png)
 
-### Velocity Direction Plot
+### StreamPlot from Velocity
 ![img.png](Velocity.png)
+
+## Rankine Oval
+
+```python
+plotting_kwargs2 = {
+    'CONTOR_LEVELS': 50,
+}
+v1 = elementary_flows.Source(x_pos=-2, y_pos=0, strength=10)
+v2 = elementary_flows.Source(x_pos=2, y_pos=0, strength=-10)# Negative strength is a sink
+u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
+
+flow = FlowField([v1, v2, u1], **plotting_kwargs2)
+flow.plot_flow_from_stream_function(x, y).show()
+flow.plot_velocity(x, y).show()
+```
+### Result
+#### Streamline Contour Plot
+
+Streamline Contour Plot
+This is an issue I have had with sources. All streamlines eventually turn in the direction of `pi/2` or `3pi/2`. This is, I believe, because for all streamlines, as the values `x - x_0` approach zero, `theta` approaches `pi/2`. I will try to find a reasonable solution to this problem.
+![img.png](StreamLinesRankineOval.png)
+
+#### StreamPlot from Velocity
+That being said, It does not affect the velocity field, so the streamplot is not affected.
+
+![img.png](StreamPlotRankineOval.png)
+
+
+## Kelvin's Oval
+
+```python
+plotting_kwargs2 = {
+    'CONTOR_LEVELS': 50,
+}
+v1 = elementary_flows.Vortex(x_pos=0, y_pos=2, circulation=10)
+v2 = elementary_flows.Vortex(x_pos=0, y_pos=-2, circulation=-10)
+u1 = elementary_flows.UniformFlow(horizontal_vel=1, vertical_vel=0)
+flow = FlowField([v1, v2, u1], **plotting_kwargs2)
+flow.plot_flow_from_stream_function(x, y).show()
+flow.plot_velocity(x, y).show()
+```
+
+### Result
+#### Streamline Contour Plot
+![img.png](StreamLinesKelvinOval.png)
+#### StreamPlot from Velocity
+![img.png](StreamPlotKelvinOval.png)

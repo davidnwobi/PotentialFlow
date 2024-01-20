@@ -88,3 +88,4 @@ class FlowField:
         X, Y = np.meshgrid(x, y)
         U, V = self.velocity(X, Y)
         return plot_flow_from_velocities(X, Y, U, V, **self.plotting_kwargs)
+
