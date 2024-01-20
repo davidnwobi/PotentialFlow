@@ -11,8 +11,8 @@ The basic elementary flows provided are:
 - Doublet
 
 ## Usage
-These are some consnats that provide a default configuration for the plotting. You can change these values as desired. The values are self explanatory.
-Ultimately the plot funtion returns a matplotlib figure object. Yon further manipulate the figure object to suit your needs.
+These are some constants that provide a default configuration for the plotting. These can change these values as desired. The values are self-explanatory.
+Ultimately, the plot function returns a matplotlib figure object. That can be further manipulated to suit your needs.
 ```python
 import numpy as np
 import elementary_flows
@@ -41,8 +41,8 @@ plotting_kwargs = {  # Default values
 ## Lifting Flow over a Cylinder
 ### Initial Configuration
 ```python
-x = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num=NO_OF_POINTS)
-y = np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num=NO_OF_POINTS)
+x = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num=NO_OF_POINTS) # X and Y coordinates for the grid
+y = np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num=NO_OF_POINTS) # Don't worry, Meshgrid is done internally
 
 velocity = 10
 radius = 1
