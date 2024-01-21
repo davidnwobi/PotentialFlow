@@ -55,10 +55,12 @@ class Source(NonUniformFlow):
     strength: float = 0.0
 
     def stream_function(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        mask = self.theta_mask(x, y)
-        x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
+        # mask = self.theta_mask(x, y)
+        # x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
+
         theta = self.theta(x, y)
-        return self.strength / (2 * np.pi) * theta
+
+        return self.strength / (2 * np.pi) * self.theta(x, y)
 
     def velocity(self, x: np.ndarray, y: np.ndarray) -> tp.Tuple[np.ndarray, np.ndarray]:
         mask = self.r_squared_mask(x, y)
