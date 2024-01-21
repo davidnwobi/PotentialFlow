@@ -3,7 +3,30 @@ import scipy as sp
 from tuple_collections import Ellipse, EllipseProperties, FlowFieldProperties
 
 
-def compute_ellipse_and_circulation(flow_field: FlowFieldProperties, ellipse_def: Ellipse, divsions=100):
+def compute_ellipse_and_circulation(flow_field: FlowFieldProperties, ellipse_def: Ellipse, divsions: int=100):
+    '''
+    Computes the circulation around an ellipse placed in a flow field.
+
+    Parameters
+    ----------
+
+    flow_field : FlowFieldProperties
+    The flow field properties.
+
+    ellipse_def : Ellipse
+    The ellipse definition.
+
+    divsions : int
+    The number of divisions to use when discretizing the ellipse.
+
+    Returns
+    -------
+
+    EllipseProperties
+    The ellipse properties.
+
+    '''
+
     t = np.linspace(0, 2 * np.pi, divsions)
 
     x_ellipse = ellipse_def.a * np.cos(t) + ellipse_def.x0

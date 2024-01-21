@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     # Create ellipse and compute circulation
     flow_properties = FlowFieldProperties(x, y, velocity_field[0], velocity_field[1])
-    ellipse = Ellipse(x0=0, y0=0, a=1, b=1)
+    ellipse = Ellipse(x0=-2, y0=-2, a=1, b=1)
     ellipse_properties = compute_ellipse_and_circulation(flow_properties, ellipse, divsions=1000)
 
     # Plot ellipse and circulation
