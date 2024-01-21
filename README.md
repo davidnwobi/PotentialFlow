@@ -87,11 +87,9 @@ flow.plot_velocity(x, y).show()
 #### Streamline Contour Plot
 
 Streamline Contour Plot
-This is an issue I have had with sources. All streamlines eventually turn in the direction of `pi/2` or `3pi/2`. This is, I believe, because for all streamlines, as the values `x - x_0` approach zero, `theta` approaches `pi/2`. I will try to find a reasonable solution to this problem.
-![img.png](StreamLinesRankineOval.png)
+![img.png](StremalinesRakineOval.png)
 
 #### StreamPlot from Velocity
-That being said, It does not affect the velocity field, so the streamplot is not affected.
 
 ![img.png](StreamPlotRankineOval.png)
 

@@ -67,7 +67,7 @@ class FlowField:
         if flows is None:
             flows = []
         self.flows: tp.Optional[tp.List[elementary_flows.ElementaryFlow]] = flows
-        self.plotting_kwargs = plotting_kwargs
+        self.plotting_kwargs: dict = plotting_kwargs
 
         self.plotting_kwargs.update(**kwargs)
 

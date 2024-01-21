@@ -41,7 +41,7 @@ class NonUniformFlow(ElementaryFlow):
         return (x - self.x_pos) ** 2 + (y - self.y_pos) ** 2
 
     def theta(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        return np.arctan((y - self.y_pos) / (x - self.x_pos))
+        return np.arctan2((y - self.y_pos), (x - self.x_pos))
 
     def theta_mask(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         return np.abs(self.theta(x, y)) < self.mask_tol
@@ -57,7 +57,8 @@ class Source(NonUniformFlow):
     def stream_function(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         mask = self.theta_mask(x, y)
         x, y = (np.ma.masked_where(mask, x), np.ma.masked_where(mask, y))
-        return self.strength / (2 * np.pi) * self.theta(x, y)
+        theta = self.theta(x, y)
+        return self.strength / (2 * np.pi) * theta
 
     def velocity(self, x: np.ndarray, y: np.ndarray) -> tp.Tuple[np.ndarray, np.ndarray]:
         mask = self.r_squared_mask(x, y)
