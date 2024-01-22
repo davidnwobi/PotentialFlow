@@ -5,9 +5,9 @@ import typing as tp
 
 
 class FlowFieldProperties(namedtuple("FlowField", ['x', 'y', 'u', 'v'])):
-    '''
+    """
     A class that represents a flow field properties.
-
+    For x and y, DO NOT PASS IN MESHGRIDDED ARRAYS. Pass in the x and y arrays themselves.
     Attributes
     ----------
 
@@ -24,12 +24,12 @@ class FlowFieldProperties(namedtuple("FlowField", ['x', 'y', 'u', 'v'])):
     The y-component of the velocity field.
 
 
-    '''
+    """
     pass
 
 
 class Ellipse(namedtuple("Ellipse", ['x0', 'y0', 'a', 'b'])):
-    '''
+    """
     A class that represents an ellipse.
 
     Attributes
@@ -48,12 +48,12 @@ class Ellipse(namedtuple("Ellipse", ['x0', 'y0', 'a', 'b'])):
     The minor axis of the ellipse.
 
 
-    '''
+    """
     pass
 
 
 class EllipseProperties(namedtuple("BodyProperties", ['x_cor', 'y_cor', 'u', 'v', 'circulation'])):
-    '''
+    """
     A class that represents the properties of an ellipse discretized and placed in a flow field.
 
     Attributes
@@ -74,13 +74,13 @@ class EllipseProperties(namedtuple("BodyProperties", ['x_cor', 'y_cor', 'u', 'v'
     circulation : float
     The circulation of the ellipse.
 
-    '''
+    """
     pass
 
 
 @dataclass
 class Geometry:
-    '''
+    """
     A class that represents a geometry.
 
     Attributes
@@ -94,7 +94,7 @@ class Geometry:
 
     AoA : float
     The angle of attack of the geometry.
-    '''
+    """
     x: np.ndarray
     y: np.ndarray
     AoA: float

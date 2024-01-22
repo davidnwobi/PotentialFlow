@@ -1,11 +1,11 @@
 import numpy as np
 from src import elementary_flows
-from flow_field import FlowField
+from src.flow_field import FlowField
 from multiprocessing import freeze_support
 import matplotlib.pyplot as plt
 import random
-from tuple_collections import FlowFieldProperties, Ellipse, EllipseProperties
-from circulation import compute_ellipse_and_circulation
+from src.data_collections import FlowFieldProperties, Ellipse, EllipseProperties
+from src.circulation import compute_ellipse_and_circulation
 
 if __name__ == '__main__':
     freeze_support()
@@ -41,11 +41,12 @@ if __name__ == '__main__':
     u1 = elementary_flows.UniformFlow(horizontal_vel=velocity * np.cos(alpha), vertical_vel=velocity * np.sin(alpha))
     v1 = elementary_flows.Vortex(x_pos=0, y_pos=0, circulation=vortex_strength)
     d1 = elementary_flows.Doublet(x_pos=0, y_pos=0, kappa=kappa)
-
-    flow = FlowField([v1, d1, u1], **plotting_kwargs)
+    s1= elementary_flows.Source(x_pos=0, y_pos=0, strength=10)
+    flow = FlowField([s1], **plotting_kwargs)
     X, Y = np.meshgrid(x, y)
+    stream_function = np.array(flow.stream_function(X, Y))
     velocity_field = flow.velocity(X, Y)
-    fig = flow.plot_velocity(x, y)
+    fig = flow.plot_flow_from_stream_function(x, y)
 
     # Create ellipse and compute circulation
     flow_properties = FlowFieldProperties(x, y, velocity_field[0], velocity_field[1])
