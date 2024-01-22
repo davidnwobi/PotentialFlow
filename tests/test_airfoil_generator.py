@@ -9,7 +9,7 @@ def test_generate_four_digit_NACA():
     YB = data[:, 1]
     x, y = generate_four_digit_NACA(2412, len(XB), 1)
 
-    assert stats.spearmanr(YB[:-1], y).statistic > 0.99
+    assert stats.spearmanr(YB, y).statistic > 0.99
 
 
 def test_generate_four_digit_NACA_2():
@@ -18,4 +18,4 @@ def test_generate_four_digit_NACA_2():
     YB = data[:, 1]
     x, y = generate_four_digit_NACA(2412, len(XB), 1)
 
-    assert stats.spearmanr(XB[:-1], x).statistic > 0.99
+    assert stats.spearmanr(XB, x).statistic > 0.99

@@ -4,6 +4,7 @@ import typing as tp
 import multiprocessing as mp
 from itertools import repeat
 from . import elementary_flows
+from .plotting import plot_flow_from_stream_function, plot_flow_from_velocities
 
 plotting_kwargs = {
     'X_NEG_LIMIT': -5,
@@ -26,25 +27,6 @@ def velocity_internal(flow, x, y):
 
 def stream_function_internal(flow, x, y):
     return flow.stream_function(x, y)
-
-
-def plot_flow_from_stream_function(psi: tp.Callable[[np.ndarray, np.ndarray], np.ndarray], X: np.ndarray,
-                                   Y: np.ndarray, **kwargs) -> plt.Figure:
-    fig = plt.figure(figsize=kwargs.get("FIGURE_SIZE", (12, 12)), dpi=kwargs.get("DPI", 100))
-    CS = plt.contour(X, Y, psi(X, Y), kwargs.get("CONTOR_LEVELS", 50))
-    if kwargs.get("CONTOUR_LABELS"):
-        plt.clabel(CS, inline=1, fontsize=10)
-    plt.xlim(kwargs.get("X_NEG_LIMIT"), kwargs.get("X_POS_LIMIT"))
-    plt.ylim(kwargs.get("Y_NEG_LIMIT"), kwargs.get("Y_POS_LIMIT"))
-    return fig
-
-
-def plot_flow_from_velocities(X: np.ndarray, Y: np.ndarray, U: np.ndarray, V: np.ndarray, **kwargs) -> plt.Figure:
-    fig = plt.figure(figsize=kwargs.get("FIGURE_SIZE", (12, 12)), dpi=kwargs.get("DPI", 100))
-    plt.streamplot(X, Y, U, V, density=kwargs.get("STREAMLINE_DENSITY", 3), color=kwargs.get("STREAMLINE_COLOR", 'b'))
-    plt.xlim(kwargs.get("X_NEG_LIMIT"), kwargs.get("X_POS_LIMIT"))
-    plt.ylim(kwargs.get("Y_NEG_LIMIT"), kwargs.get("Y_POS_LIMIT"))
-    return fig
 
 
 class FlowField:

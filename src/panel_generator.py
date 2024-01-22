@@ -5,7 +5,7 @@ from . import data_collections as dc
 class PanelGenerator:
     @staticmethod
     def is_clockwise(geometry: dc.Geometry):
-        edge = np.diff(geometry.x) * (np.diff(geometry.y))
+        edge = (geometry.x * np.roll(geometry.y, 1)) - (geometry.y * np.roll(geometry.x,1))
         return np.sum(edge) > 0
 
     @staticmethod

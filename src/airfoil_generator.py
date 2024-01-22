@@ -1,4 +1,5 @@
 import numpy as np
+from math import ceil
 import matplotlib.pyplot as plt
 from scipy import stats
 
@@ -32,7 +33,7 @@ def thickness(x, t):
 
 
 def generate_four_digit_NACA(num_NACA, num_points, chord_length):
-    num_points = num_points // 2
+    num_points = int(ceil(num_points/2))
     scale = chord_length / 1
     num1 = (num_NACA // 1000)
     num2 = (num_NACA // 100) % 10
@@ -55,6 +56,6 @@ def generate_four_digit_NACA(num_NACA, num_points, chord_length):
     x_lower = x + y_t * np.sin(theta)
     y_lower = y - y_t * np.cos(theta)
 
-    x, y = np.concatenate((x_upper, x_lower)), np.concatenate((y_upper, y_lower))
+    x, y = np.concatenate((x_upper, x_lower[1:])), np.concatenate((y_upper, y_lower[1:]))
 
     return x, y
