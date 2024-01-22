@@ -21,7 +21,7 @@ def find_closest_value_index(array, target):
 
 @pytest.fixture
 def default_data(request):
-    num_points = 10000
+    num_points = 1000
     x = np.linspace(-3, 3, num=num_points)
     y = np.linspace(-3, 3, num=num_points)
     X, Y = np.meshgrid(x, y)
@@ -91,21 +91,24 @@ def test_rankine_oval(default_data):
     velocity_field = flow.velocity(X, Y)
     stream_function = flow.stream_function(X, Y)
 
-    half_body_length = np.sqrt(strength / (np.pi * velocity * location) + 1)*location
+    half_body_length = np.sqrt(strength / (np.pi * velocity * location) + 1) * location
 
     def half_body_width_func(h):
         a = location
         m = strength
-        return 0.5 - (h ** 2 / a - 1) * np.tan(2 * (np.pi * velocity * a / m) * h / a) - h/a
+        return 0.5 - (h ** 2 / a - 1) * np.tan(2 * (np.pi * velocity * a / m) * h / a) - h / a
 
     half_body_width = optimize.newton(half_body_width_func, half_body_length)
-    loc_half_body_width = find_closest_value_index(x, half_body_length)
+
+    loc_half_body_length = find_closest_value_index(x, half_body_length)
     zero_y = find_closest_value_index(y, 0)
     zero_x = find_closest_value_index(x, 0)
     loc_half_body_width = find_closest_value_index(y, half_body_width)
 
-    assert velocity_field[0][zero_y, loc_half_body_width] == pytest.approx(0, abs=1e-2)
+    # Stag points
+    assert velocity_field[0][zero_y, loc_half_body_length] == pytest.approx(0, abs=1e-2)
+    assert velocity_field[1][zero_y, loc_half_body_length] == pytest.approx(0, abs=1e-2)
     assert stream_function[zero_y, loc_half_body_width] == pytest.approx(0, abs=1e-2)
+
+    # Check that the vertical velocity at the top of the body is zero
     assert velocity_field[1][loc_half_body_width, zero_x] == pytest.approx(0, abs=1e-2)
-
-
