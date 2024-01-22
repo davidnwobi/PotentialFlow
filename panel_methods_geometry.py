@@ -8,12 +8,14 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from .tuple_collections import Geometry, PanelizedGeometry
-from panel_generator import PanelGenerator
+from src.data_collections import Geometry, PanelizedGeometry
+from src.panel_generator import PanelGenerator
+from src.plotting import plot_panelized_geometry
 
-numB = 100  # Number of boundary points
+numB = 10  # Number of boundary points
 tO = 22.5  # Angle offset [deg]
-load = 'Circle'  # Load circle or airfoil
+load = 'Circles'  # Load circle or airfoil
+geometry = None
 panelized_geometry = None
 numPan = None
 if load == 'Circle':  # If circle is selected
@@ -28,8 +30,8 @@ if load == 'Circle':  # If circle is selected
     # Number of panels
     numPan = len(XB) - 1  # Number of panels
 
-    circle = Geometry(XB, YB, 0)
-    panelized_geometry = PanelGenerator.compute_geometric_quantities(circle)
+    geometry = Geometry(XB, YB, 0)
+    panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry)
 
 else:  # If airfoil is selected
     # Load airfoil data
@@ -39,8 +41,8 @@ else:  # If airfoil is selected
 
     # Number of panels
     numPan = len(XB) - 1
-    airfoil = Geometry(XB, YB, 0)
-    panelized_geometry = PanelGenerator.compute_geometric_quantities(airfoil)
+    geometry = Geometry(XB, YB, 0)
+    panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry)
 
 # %% PLOTTING
 
@@ -54,25 +56,9 @@ fig = plt.figure(1)  # Create figure
 plt.cla()  # Get ready for plotting
 if (load == 'Circle'):  # If circle is selected
     plt.plot(x, y, 'k--')  # Plot actual circle outline
-plt.fill(XB, YB, 'k')  # Plot polygon (circle or airfoil)
-X = np.zeros(2)  # Initialize panel X variable
-Y = np.zeros(2)  # Initialize panel Y variable
-for i in range(numPan):  # Loop over all panels
-    X[0] = panelized_geometry.control_points_x_cor[i]  # Panel starting X point
-    X[1] = panelized_geometry.control_points_x_cor[i] + panelized_geometry.panel_length[i] * np.cos(
-        panelized_geometry.panel_normal_angle[i])
-    Y[0] = panelized_geometry.control_points_y_cor[i]  # Panel starting Y point
-    Y[1] = panelized_geometry.control_points_y_cor[i] + panelized_geometry.panel_length[i] * np.sin(
-        panelized_geometry.panel_normal_angle[i])
-    if (i == 0):  # For first panel
-        plt.plot(X, Y, 'b-', label='First Panel')  # Plot the first panel normal vector
-    elif (i == 1):  # For second panel
-        plt.plot(X, Y, 'g-', label='Second Panel')  # Plot the second panel normal vector
-    else:  # For every other panel
-        plt.plot(X, Y, 'r-')  # Plot the panel normal vector
-plt.xlabel('X-Axis')  # Set X-label
-plt.ylabel('Y-Axis')  # Set Y-label
-plt.title('Panel Geometry')  # Set title
-plt.axis('equal')  # Set axes equal
-plt.legend()  # Plot legend
-plt.show()  # Display plot
+
+
+fig = plot_panelized_geometry(geometry, panelized_geometry)
+if (load == 'Circle'):  # If circle is selected
+    plt.plot(x, y, 'k--')  # Plot actual circle outline
+plt.show()
