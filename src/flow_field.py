@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import elementary_flows
 import typing as tp
 import multiprocessing as mp
 from itertools import repeat
+from . import elementary_flows
 
 plotting_kwargs = {
     'X_NEG_LIMIT': -5,

@@ -13,20 +13,24 @@ The basic elementary flows provided are:
 ## Usage
 These are some constants that provide a default configuration for the plotting. These can be changed as desired. The values are self-explanatory.
 Ultimately, the plot function returns a matplotlib figure object so that can be further manipulated to suit your needs.
+
 ```python
 import numpy as np
-import elementary_flows
+from src import elementary_flows
 from flow_field import FlowField
-form multiprocessing import freeze_support
+
+form
+multiprocessing
+import freeze_support
 
 if __name__ == '__main__':
-    freeze_support() # This is required for multiprocessing to work
-    NO_OF_POINTS = 1000 # Number of points in the grid. More points means better resolution but slower computation
+    freeze_support()  # This is required for multiprocessing to work
+    NO_OF_POINTS = 1000  # Number of points in the grid. More points means better resolution but slower computation
     X_POS_LIMIT = 5
     Y_POS_LIMIT = 5
     X_NEG_LIMIT = -5
     Y_NEG_LIMIT = -5
-    
+
     plotting_kwargs = {  # Default values
         'X_NEG_LIMIT': X_NEG_LIMIT,
         'X_POS_LIMIT': X_POS_LIMIT,
@@ -67,10 +71,10 @@ if __name__ == '__main__':
 
 ### Result
 ### Streamline Contour Plot
-![img.png](ContorPlot.png)
+![img.png](images/ContorPlot.png)
 
 ### StreamPlot from Velocity
-![img.png](Velocity.png)
+![img.png](images/Velocity.png)
 
 ### Calculating circulation
 ```python
@@ -100,7 +104,7 @@ if __name__ == '__main__':
 ### Result
 
 #### Ellipse enclosing the vortex
-![img.png](CirculationRegion1.png)
+![img.png](images/CirculationRegion1.png)
 
 Output:
 ```text
@@ -108,7 +112,7 @@ circulation: 125.66287765465529
 ```
 
 #### Ellipse not enclosing the vortex
-![img.png](CirculationRegion2.png)
+![img.png](images/CirculationRegion2.png)
 Output:
 ```text
 circulation: -1.9131363160340698e-12
@@ -132,11 +136,11 @@ flow.plot_velocity(x, y).show()
 #### Streamline Contour Plot
 
 Streamline Contour Plot
-![img.png](StremalinesRakineOval.png)
+![img.png](images/StremalinesRakineOval.png)
 
 #### StreamPlot from Velocity
 
-![img.png](StreamPlotRankineOval.png)
+![img.png](images/StreamPlotRankineOval.png)
 
 
 
@@ -156,7 +160,7 @@ flow.plot_velocity(x, y).show()
 
 ### Result
 #### Streamline Contour Plot
-![img.png](StreamLinesKelvinOval.png)
+![img.png](images/StreamLinesKelvinOval.png)
 #### StreamPlot from Velocity
-![img.png](StreamPlotKelvinOval.png)
+![img.png](images/StreamPlotKelvinOval.png)
 

@@ -1,9 +1,9 @@
 import numpy as np
 import scipy as sp
-from tuple_collections import Ellipse, EllipseProperties, FlowFieldProperties
+from . import data_collections as dc
 
 
-def compute_ellipse_and_circulation(flow_field: FlowFieldProperties, ellipse_def: Ellipse, divsions: int=100):
+def compute_ellipse_and_circulation(flow_field: dc.FlowFieldProperties, ellipse_def: dc.Ellipse, divsions: int=100):
     '''
     Computes the circulation around an ellipse placed in a flow field.
 
@@ -36,4 +36,4 @@ def compute_ellipse_and_circulation(flow_field: FlowFieldProperties, ellipse_def
     v_ellipse = sp.interpolate.RectBivariateSpline(flow_field.y, flow_field.x, flow_field.v).ev(y_ellipse, x_ellipse)
 
     circulation = -(np.trapz(u_ellipse, x_ellipse) + np.trapz(v_ellipse, y_ellipse))
-    return EllipseProperties(x_ellipse, y_ellipse, u_ellipse, v_ellipse, circulation)
+    return dc.EllipseProperties(x_ellipse, y_ellipse, u_ellipse, v_ellipse, circulation)
