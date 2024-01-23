@@ -12,13 +12,13 @@ def compute_repeating_terms(x_i, y_i, X_j, Y_j, phi_j):
     A = -(x_i - X_j) * np.cos(phi_j) - (y_i - Y_j) * np.sin(phi_j)
     B = (x_i - X_j) ** 2 + (y_i - Y_j) ** 2
     E = np.sqrt(B - A ** 2)
-    # E = np.where(np.iscomplex(E) | np.isnan(E) | np.isinf(E), 0, E)
+    E = np.where(np.iscomplex(E) | np.isnan(E) | np.isinf(E), 0, E)
     return A, B, E
 
 
 def normal_geometric_integral(x_i, y_i, X_j, Y_j, phi_i, phi_j, S_j, A, B, E):
     Cn = np.sin(phi_i - phi_j)
-    Dn = -(x_i - X_j) * np.sin(phi_j) + (y_i - Y_j) * np.cos(phi_j)
+    Dn = -(x_i - X_j) * np.sin(phi_i) + (y_i - Y_j) * np.cos(phi_i)
     I_ij = compute_geometric_integral(A, B, Cn, Dn, E, S_j)
 
     return I_ij
@@ -26,7 +26,7 @@ def normal_geometric_integral(x_i, y_i, X_j, Y_j, phi_i, phi_j, S_j, A, B, E):
 
 def tangential_geometric_integral(x_i, y_i, X_j, Y_j, phi_i, phi_j, S_j, A, B, E):
     Ct = -np.cos(phi_i - phi_j)
-    Dt = (x_i - X_j) * np.cos(phi_j) + (y_i - Y_j) * np.sin(phi_j)
+    Dt = (x_i - X_j) * np.cos(phi_i) + (y_i - Y_j) * np.sin(phi_i)
     J_ij = compute_geometric_integral(A, B, Ct, Dt, E, S_j)
 
     return J_ij
@@ -54,7 +54,7 @@ def compute_panel_geometric_integrals(panel_geometry: dc.PanelizedGeometry):
     for i in range(panel_geometry.S.size):
         A, B, E = compute_repeating_terms(panel_geometry.xC[i], panel_geometry.yC[i], X,
                                           Y, panel_geometry.phi)
-        # null_index = np.where(np.isnan(E) | np.isinf(E) | np.iscomplex(E))
+        null_index = np.where(np.isnan(E) | np.isinf(E) | np.iscomplex(E))
         I[i] = normal_geometric_integral(panel_geometry.xC[i], panel_geometry.yC[i], X,
                                          Y, panel_geometry.phi[i], panel_geometry.phi, panel_geometry.S,
                                          A, B, E)
@@ -64,11 +64,11 @@ def compute_panel_geometric_integrals(panel_geometry: dc.PanelizedGeometry):
                                              panel_geometry.S,
                                              A, B, E)
 
-    #     I[i, null_index] = 0
-    #     J[i, null_index] = 0
-    #
-    # I = np.where(np.isnan(I) | np.isinf(I) | np.iscomplex(I), 0, I)
-    # J = np.where(np.isnan(J) | np.isinf(J) | np.iscomplex(J), 0, J)
+        I[i, null_index] = 0
+        J[i, null_index] = 0
+
+    I = np.where(np.isnan(I) | np.isinf(I) | np.iscomplex(I), 0, I)
+    J = np.where(np.isnan(J) | np.isinf(J) | np.iscomplex(J), 0, J)
     I[np.diag_indices_from(I)] = np.pi
     J[np.diag_indices_from(J)] = np.pi
     return I, J
@@ -93,6 +93,6 @@ def compute_grid_geometric_integrals(panel_geometry: dc.PanelizedGeometry, grid_
             M_ypj[np.isnan(M_ypj)] = 0
             Ixpj[j, i], Jypj[j, i] = M_xpj, M_ypj
 
-    # Ixpj = np.where(np.isnan(Ixpj) | np.isinf(Ixpj) | np.iscomplex(Ixpj), 0, Ixpj)
-    # Jypj = np.where(np.isnan(Jypj) | np.isinf(Jypj) | np.iscomplex(Jypj), 0, Jypj)
+    Ixpj = np.where(np.isnan(Ixpj) | np.isinf(Ixpj) | np.iscomplex(Ixpj), 0, Ixpj)
+    Jypj = np.where(np.isnan(Jypj) | np.isinf(Jypj) | np.iscomplex(Jypj), 0, Jypj)
     return Ixpj, Jypj

@@ -47,57 +47,11 @@ import numpy as np
 import math as math
 
 
-def COMPUTE_IJ_SPM(XC, YC, XB, YB, phi, S):
-    # Number of panels
-    numPan = len(XC)  # Number of panels/control points
-
-    # Initialize arrays
-    I = np.zeros([numPan, numPan])  # Initialize I integral matrix
-    J = np.zeros([numPan, numPan])  # Initialize J integral matrix
-
-    # Compute integral
-    for i in range(numPan):  # Loop over i panels
-        for j in range(numPan):  # Loop over j panels
-            if (j != i):  # If the i and j panels are not the same
-                # Compute intermediate values
-                A = -(XC[i] - XB[j]) * np.cos(phi[j]) - (YC[i] - YB[j]) * np.sin(phi[j])  # A term
-                B = (XC[i] - XB[j]) ** 2 + (YC[i] - YB[j]) ** 2  # B term
-                Cn = np.sin(phi[i] - phi[j])  # C term (normal)
-                Dn = -(XC[i] - XB[j]) * np.sin(phi[i]) + (YC[i] - YB[j]) * np.cos(phi[i])  # D term (normal)
-                Ct = -np.cos(phi[i] - phi[j])  # C term (tangential)
-                Dt = (XC[i] - XB[j]) * np.cos(phi[i]) + (YC[i] - YB[j]) * np.sin(phi[i])  # D term (tangential)
-                E = np.sqrt(B - A ** 2)  # E term
-                if (E == 0 or np.iscomplex(E) or np.isnan(E) or np.isinf(
-                        E)):  # If E term is 0 or complex or a NAN or an INF
-                    I[i, j] = 0  # Set I value equal to zero
-                    J[i, j] = 0  # Set J value equal to zero
-                else:
-                    # Compute I (needed for normal velocity), Ref [1]
-                    term1 = 0.5 * Cn * np.log((S[j] ** 2 + 2 * A * S[j] + B) / B)  # First term in I equation
-                    term2 = ((Dn - A * Cn) / E) * (
-                            math.atan2((S[j] + A), E) - math.atan2(A, E))  # Second term in I equation
-                    I[i, j] = term1 + term2  # Compute I integral
-
-                    # Compute J (needed for tangential velocity), Ref [2]
-                    term1 = 0.5 * Ct * np.log((S[j] ** 2 + 2 * A * S[j] + B) / B)  # First term in I equation
-                    term2 = ((Dt - A * Ct) / E) * (
-                            math.atan2((S[j] + A), E) - math.atan2(A, E))  # Second term in I equation
-                    J[i, j] = term1 + term2  # Compute J integral
-
-            # Zero out any problem values
-            if (np.iscomplex(I[i, j]) or np.isnan(I[i, j]) or np.isinf(
-                    I[i, j])):  # If I term is complex or a NAN or an INF
-                I[i, j] = 0  # Set I value equal to zero
-            if (np.iscomplex(J[i, j]) or np.isnan(J[i, j]) or np.isinf(
-                    J[i, j])):  # If J term is complex or a NAN or an INF
-                J[i, j] = 0  # Set J value equal to zero
-
-    return I, J  # Return both I and J matrices
 
 
 if __name__ == '__main__':
     freeze_support()
-    numB = 9  # Number of boundary points
+    numB = 100  # Number of boundary points
     tO = 0  # Angle offset [deg]
     load = 'CircleS'  # Load circle or airfoil
     geometry = None
@@ -114,7 +68,7 @@ if __name__ == '__main__':
 
     # Number of panels
     numPan = len(XB) - 1  # Number of panels
-    AoA = 0
+    AoA = 10
     geometry = dc.Geometry(XB, YB, AoA)
     if not load == 'Circle':  # If circle is selected
         XB, YB = generate_four_digit_NACA("0012", numB, 1)
@@ -127,32 +81,25 @@ if __name__ == '__main__':
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)
     I, J = compute_panel_geometric_integrals(panelized_geometry)
-    Itest, Jtest = COMPUTE_IJ_SPM(panelized_geometry.xC, panelized_geometry.yC, X, Y, panelized_geometry.phi,
-                                  panelized_geometry.S)
-    print("I: ", I[0])
-    print("Itest: ", Itest[0])
+
     gamma = compute_source_strengths(panelized_geometry, V, I)
-    gamma_test = compute_source_strengths(panelized_geometry, V, Itest)
+
     sumLambda = sum(gamma * panelized_geometry.S)  # Check sum of source panel strengths
     print("Sum of L: ", sumLambda)
-    print("Sum of L: ", sum(gamma_test * panelized_geometry.S))
     V_normal, V_tangential = compute_panel_velocities(panelized_geometry, gamma, V, I, J)
-
-    Vx = V_tangential * np.cos(panelized_geometry.phi)
-    Vy = V_tangential * np.sin(panelized_geometry.phi)
     # plt.figure(figsize=(12, 12), dpi=500)
     # plt.quiver(panelized_geometry.xC, panelized_geometry.yC, Vx, Vy)
     # plt.axis('equal')
-    x, y = np.linspace(-2, 2, 100), np.linspace(-2, 2, 100)  # Create grid
+    x, y = np.linspace(-0.5, 1.5, 200), np.linspace(-0.5, 0.5, 200)  # Create grid
 
     u, v = compute_grid_velocity(panelized_geometry, x, y, gamma, V, AoA)
     plt.figure(figsize=(12, 12), dpi=500)
-    plt.streamplot(x, y, u, v, density=4, color='b')
+    plt.streamplot(x, y, u, v, density=2, color='b')
     # plt.quiver(x, y, Vx, Vy)
-    plt.xlim(-1, 2)
-    plt.ylim(-1, 2)
+    plt.xlim(-0.5, 1.5)
+    plt.ylim(-0.5, 0.5)
     plt.fill(geometry.x, geometry.y, 'k')  # Plot polygon (circle or airfoil)
-    plt.axis('equal')
+    plt.gca().set_aspect('equal', adjustable='box')
     plt.show()
 
     # plot panel geometry
@@ -170,5 +117,6 @@ if __name__ == '__main__':
     #     plt.text(panelized_geometry.xC[i], panelized_geometry.yC[i], str(i))
     #     plt.plot([panelized_geometry.xC[i], panel_vector_X[i]], [panelized_geometry.yC[i], panel_vector_Y[i]], 'k')
     #     plt.plot([panel_vector_X[i]], [panel_vector_Y[i]], 'go')
-    # plt.axis('equal')
+
+
     # plt.show()
