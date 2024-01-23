@@ -64,12 +64,12 @@ def test_panel_generator_circle():
     circle = Geometry(x, y, AoA=0)
 
     panelized_geometry = PanelGenerator.compute_geometric_quantities(circle)
-    assert len(panelized_geometry.panel_length) == num_panels
-    assert len(panelized_geometry.panel_orientation_angle) == num_panels
-    assert len(panelized_geometry.panel_normal_angle) == num_panels
+    assert len(panelized_geometry.S) == num_panels
+    assert len(panelized_geometry.phi) == num_panels
+    assert len(panelized_geometry.delta) == num_panels
     assert len(panelized_geometry.beta) == num_panels
-    assert len(panelized_geometry.control_points_x_cor) == num_panels
-    assert len(panelized_geometry.control_points_y_cor) == num_panels
+    assert len(panelized_geometry.xC) == num_panels
+    assert len(panelized_geometry.yC) == num_panels
 
     plot_panelized_geometry(circle, panelized_geometry).show()
 
@@ -85,11 +85,11 @@ def test_panel_generator_airfoil():
 
     panelized_geometry = PanelGenerator.compute_geometric_quantities(airfoil)
 
-    assert len(panelized_geometry.panel_length) == num_panels
-    assert len(panelized_geometry.panel_orientation_angle) == num_panels
-    assert len(panelized_geometry.panel_normal_angle) == num_panels
+    assert len(panelized_geometry.S) == num_panels
+    assert len(panelized_geometry.phi) == num_panels
+    assert len(panelized_geometry.delta) == num_panels
     assert len(panelized_geometry.beta) == num_panels
-    assert len(panelized_geometry.control_points_x_cor) == num_panels
-    assert len(panelized_geometry.control_points_y_cor) == num_panels
+    assert len(panelized_geometry.xC) == num_panels
+    assert len(panelized_geometry.yC) == num_panels
 
     plot_panelized_geometry(airfoil, panelized_geometry).show()

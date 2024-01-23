@@ -5,12 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5bd67ad-823d-4af4-b3e6-80e272f5cb14" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/source_panel_methods.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/geometric_integrals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/geometric_integrals2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/source_panel_methods_funcs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/panel_methods_geometry.py" beforeDir="false" afterPath="$PROJECT_DIR$/panel_methods_geometry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/airfoil_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/airfoil_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/flow_field.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/flow_field.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data_collections.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_collections.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/panel_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/panel_generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/plotting.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/plotting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_airfoil_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_airfoil_generator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_panel_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_panel_generator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,30 +64,35 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Python tests.Python tests in test_airfoil_generator.py.executor": "Run",
-    "Python tests.Python tests in test_panel_generator.py.executor": "Debug",
+    "Python tests.Python tests in test_panel_generator.py.executor": "Run",
     "Python tests.Python tests in tests.executor": "Run",
     "Python.airfoil_generator.executor": "Debug",
+    "Python.geometric_integrals.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.panel_generator.executor": "Run",
     "Python.panel_methods_geometry.executor": "Run",
+    "Python.plotting.executor": "Run",
     "Python.potential_flow.executor": "Run",
+    "Python.source_panel_methods.executor": "Run",
     "Python.test_panel_generator.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/dnwob/PotentialFlow",
+    "last_opened_file_path": "C:/Users/dnwob/PotentialFlow/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable",
+    "settings.editor.selected.configurable": "PyScientificConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\dnwob\PotentialFlow\src" />
       <recent name="C:\Users\dnwob\PotentialFlow" />
       <recent name="C:\Users\dnwob\PotentialFlow\tests" />
     </key>
@@ -90,7 +101,7 @@
       <recent name="C:\Users\dnwob\PotentialFlow\tests\airfoils" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.source_panel_methods">
     <configuration name="circulation_main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="PotentialFlow" />
       <option name="ENV_FILES" value="" />
@@ -162,6 +173,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="source_panel_methods" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="PotentialFlow" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="C:\ProgramData\anaconda3" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/source_panel_methods.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests in tests" type="tests" factoryName="Autodetect" nameIsGenerated="true">
       <module name="PotentialFlow" />
       <option name="ENV_FILES" value="" />
@@ -181,6 +216,7 @@
     </configuration>
     <list>
       <item itemvalue="Python.potential_flow" />
+      <item itemvalue="Python.source_panel_methods" />
       <item itemvalue="Python.circulation_main" />
       <item itemvalue="Python.panel_methods_geometry" />
       <item itemvalue="Python tests.Python tests in tests" />
@@ -208,7 +244,27 @@
       <workItem from="1705699486605" duration="21088000" />
       <workItem from="1705754526087" duration="11589000" />
       <workItem from="1705834560657" duration="4008000" />
-      <workItem from="1705944236793" duration="912000" />
+      <workItem from="1705944236793" duration="952000" />
+      <workItem from="1705948560040" duration="1498000" />
+      <workItem from="1705953559443" duration="18916000" />
+      <workItem from="1706021238716" duration="1158000" />
+      <workItem from="1706022413121" duration="3880000" />
+      <workItem from="1706026321715" duration="280000" />
+      <workItem from="1706026610826" duration="302000" />
+      <workItem from="1706026922669" duration="208000" />
+      <workItem from="1706027139043" duration="1025000" />
+      <workItem from="1706028186874" duration="679000" />
+      <workItem from="1706028877280" duration="719000" />
+      <workItem from="1706029611534" duration="2022000" />
+      <workItem from="1706036547861" duration="498000" />
+      <workItem from="1706037062632" duration="1137000" />
+      <workItem from="1706038221836" duration="1775000" />
+      <workItem from="1706040014809" duration="1143000" />
+      <workItem from="1706041172272" duration="1602000" />
+      <workItem from="1706045569392" duration="571000" />
+      <workItem from="1706046311415" duration="401000" />
+      <workItem from="1706046723643" duration="1245000" />
+      <workItem from="1706047985455" duration="494000" />
     </task>
     <servers />
   </component>
@@ -231,6 +287,21 @@
           <line>85</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/panel_methods_geometry.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/source_panel_methods.py</url>
+          <line>122</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/source_panel_methods.py</url>
+          <line>161</line>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
@@ -242,10 +313,14 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PotentialFlow$main.coverage" NAME="main Coverage Results" MODIFIED="1705934195589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/PotentialFlow$airfoil_generator.coverage" NAME="airfoil_generator Coverage Results" MODIFIED="1705944723230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
-    <SUITE FILE_PATH="coverage/PotentialFlow$.coverage" NAME=" Coverage Results" MODIFIED="1705945006393" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/PotentialFlow$panel_methods_geometry.coverage" NAME="panel_methods_geometry Coverage Results" MODIFIED="1705937092740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$.coverage" NAME=" Coverage Results" MODIFIED="1706028783141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$panel_methods_geometry.coverage" NAME="panel_methods_geometry Coverage Results" MODIFIED="1706022555736" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$plotting.coverage" NAME="plotting Coverage Results" MODIFIED="1706012687775" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$geometric_integrals.coverage" NAME="geometric_integrals Coverage Results" MODIFIED="1706025820130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$panel_generator.coverage" NAME="panel_generator Coverage Results" MODIFIED="1706011596823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/PotentialFlow$circulation_main.coverage" NAME="circulation_main Coverage Results" MODIFIED="1705928095467" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/PotentialFlow$potential_flow.coverage" NAME="potential_flow Coverage Results" MODIFIED="1705944249546" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$source_panel_methods.coverage" NAME="source_panel_methods Coverage Results" MODIFIED="1706048421273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/PotentialFlow$test_panel_generator.coverage" NAME="test_panel_generator Coverage Results" MODIFIED="1705944266953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/PotentialFlow$potential_flow.coverage" NAME="potential_flow Coverage Results" MODIFIED="1706026335644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

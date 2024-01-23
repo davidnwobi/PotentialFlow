@@ -99,31 +99,36 @@ class Geometry:
     y: np.ndarray
     AoA: float
 
-
-class PanelizedGeometry(tp.NamedTuple('PanelizedGeometry', [('panel_length', np.ndarray),
-                                                            ('panel_orientation_angle', np.ndarray),
-                                                            ('panel_normal_angle', np.ndarray),
-                                                            ('beta', np.ndarray),
-                                                            ('control_points_x_cor', np.ndarray),
-                                                            ('control_points_y_cor', np.ndarray)])):
+@dataclass
+class PanelizedGeometry():
     """
     A class that represents a panelized geometry.
 
     Attributes
     ----------
 
-    panel_length : np.ndarray
+    S : np.ndarray
+    The length of the panel.
 
-    panel_orientation_angle : np.ndarray
+    phi : np.ndarray
+    The angle between the x-axis and the inside panel surface.
 
-    panel_normal_angle : np.ndarray
+    delta : np.ndarray
+    The angle between the x-axis and the outside panel normal.
 
     beta : np.ndarray
     The angle between the freestream and the panel normal.
 
-    control_points_x_cor : np.ndarray
+    xC : np.ndarray
+    x-coordinate of the control point.
 
-    control_points_y_cor : np.ndarray
+    yC : np.ndarray
+    y-coordinate of the control point.
 
     """
-    pass
+    S: np.ndarray
+    phi: np.ndarray
+    delta: np.ndarray
+    beta: np.ndarray
+    xC: np.ndarray
+    yC: np.ndarray

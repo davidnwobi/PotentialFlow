@@ -12,9 +12,9 @@ from src.data_collections import Geometry, PanelizedGeometry
 from src.panel_generator import PanelGenerator
 from src.plotting import plot_panelized_geometry
 
-numB = 10  # Number of boundary points
+numB = 9  # Number of boundary points
 tO = 22.5  # Angle offset [deg]
-load = 'Circles'  # Load circle or airfoil
+load = 'Circle'  # Load circle or airfoil
 geometry = None
 panelized_geometry = None
 numPan = None
@@ -51,12 +51,8 @@ T = np.linspace(0, 2 * np.pi, 1000)  # Angle array to compute circle
 x = np.cos(T)  # Circle X points
 y = np.sin(T)  # Circle Y points
 
-# Plot the paneled geometry
-fig = plt.figure(1)  # Create figure
-plt.cla()  # Get ready for plotting
-if (load == 'Circle'):  # If circle is selected
-    plt.plot(x, y, 'k--')  # Plot actual circle outline
 
+plt.cla()  # Get ready for plotting
 
 fig = plot_panelized_geometry(geometry, panelized_geometry)
 if (load == 'Circle'):  # If circle is selected
