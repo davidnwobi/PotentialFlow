@@ -26,6 +26,27 @@ def point_in_polygon(x: float, y: float, polygon: np.ndarray):
 
     return inside
 
+
+@nb.njit
+def store_result(result, u, v):
+    for tpl in result:
+        i, j, u_, v_ = tpl
+        i = int(i)
+        j = int(j)
+        u[j, i] = u_
+        v[j, i] = v_
+
+
+def velocity_parallel_function(args):
+    coordinate, gamma, Mxpj, Mypj, free_stream_velocity, AoA, x, y, u, v, shape = args
+    i, j = coordinate
+    u, v = 0, 0
+    if not point_in_polygon(x[i], y[j], shape):
+        u = np.sum(gamma * Mxpj[j, i] / (2 * np.pi)) + free_stream_velocity * np.cos(AoA * np.pi / 180)
+        v = np.sum(gamma * Mypj[j, i] / (2 * np.pi)) + free_stream_velocity * np.sin(AoA * np.pi / 180)
+    return float(i), float(j), float(u), float(v)
+
+
 def compute_grid_velocity(panelized_geometry, x, y, gamma, free_stream_velocity=1, AoA=0):
     Mxpj, Mypj = gi.compute_grid_geometric_integrals(panelized_geometry, x, y)
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
@@ -35,17 +56,21 @@ def compute_grid_velocity(panelized_geometry, x, y, gamma, free_stream_velocity=
     shape = np.array([X, Y]).T
     u = np.zeros((len(x), len(y)))
     v = np.zeros((len(x), len(y)))
-    time1 = time.time()
-    for i in range(len(x)):
-        for j in range(len(y)):
-            if point_in_polygon(float(x[i]), float(y[j]), shape):
-                u[j, i] = 0
-                v[j, i] = 0
-            else:
-                u[j, i] = np.sum(gamma * Mxpj[j, i] / (2 * np.pi)) + free_stream_velocity * np.cos(AoA * np.pi / 180)
-                v[j, i] = np.sum(gamma * Mypj[j, i] / (2 * np.pi)) + free_stream_velocity * np.sin(AoA * np.pi / 180)
-    time2 = time.time()
-    print('Time to compute grid velocity: ', time2 - time1)
+
+    def arg_generator():
+        for i in range(len(x)):
+            for j in range(len(y)):
+                print(id(gamma))
+                yield (i, j), gamma, Mxpj, Mypj, free_stream_velocity, AoA, x, y, u, v, shape
+
+    time_start = time.time()
+    with Pool() as pool:
+        result = pool.map(velocity_parallel_function, arg_generator())
+    time_end = time.time()
+    print("Time to compute grid velocity: ", time_end - time_start)
+
+    store_result(result, u, v)
+
     return u, v
 
 

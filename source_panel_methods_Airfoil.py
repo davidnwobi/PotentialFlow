@@ -2,34 +2,33 @@ import matplotlib.pyplot as plt
 from src.panel_generator import PanelGenerator
 from src.geometric_integrals import compute_panel_geometric_integrals
 import src.data_collections as dc
-from src.flow_field import *
+from src.airfoil_generator import generate_four_digit_NACA
 from src.source_panel_methods_funcs import *
+from aeropy import xfoil_module as xf
+
 import numpy as np
 import pandas as pd
-from multiprocessing import freeze_support
-import time
 
 if __name__ == '__main__':
-    time_start = time.time()
-    freeze_support()
-    numB = 50  # Number of boundary points
-    num_grid = 50
-    X_NEG_LIMIT = -2
-    X_POS_LIMIT = 2
-    Y_NEG_LIMIT = -2
-    Y_POS_LIMIT = 2
-    tO = 22.5  # Angle offset [deg]
-    load = 'Circle'  # Load circle or airfoil
-    radius = 1
-    theta = np.linspace(0, 360, numB)  # Angles to compute boundary points [deg]
-    theta = theta + tO  # Add angle offset [deg]
-    theta = theta * (np.pi / 180)  # Convert angle to radians [rad]
+    airfoil = '2412'
+    AoA = 8
+    res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=AoA, NACA=True, )
 
-    # Boundary points
-    XB = np.cos(theta) * radius  # X value of boundary points
-    YB = np.sin(theta) * radius  # Y value of boundary points
+    xfoil_cp = pd.DataFrame(res)
+    xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
+    xfoil_cp_low = xfoil_cp[xfoil_cp['y'] <= 0]
 
-    AoA = 20
+    numB = 25  # Number of boundary points
+    num_grid = 25
+    X_NEG_LIMIT = -0.5
+    X_POS_LIMIT = 1.5
+    Y_NEG_LIMIT = -1
+    Y_POS_LIMIT = 1
+
+    load = 'Circle2'  # Load circle or airfoil
+
+    XB, YB = generate_four_digit_NACA(airfoil, numB, 1)
+
     V = 1
     geometry = dc.Geometry(XB, YB, AoA)
     panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry)
@@ -41,7 +40,6 @@ if __name__ == '__main__':
 
     V_normal, V_tangential = compute_panel_velocities(panelized_geometry, gamma, V, I, J)
     x, y = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num_grid), np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num_grid)  # Create grid
-
     u, v = compute_grid_velocity(panelized_geometry, x, y, gamma, V, AoA)
 
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
@@ -61,6 +59,14 @@ if __name__ == '__main__':
     theta = np.linspace(0, 2 * np.pi, 100)
 
     Cp = 1 - panel_velocities / V ** 2
+    spm_CP = pd.DataFrame({
+        'x': panelized_geometry.xC,
+        'y': panelized_geometry.yC,
+        'Cp': Cp
+    })
+    spm_CP_upp = spm_CP[spm_CP['y'] >= 0]
+    spm_CP_low = spm_CP[spm_CP['y'] <= 0]
+
     panelized_geometry.beta = np.where(panelized_geometry.beta > 2 * np.pi, panelized_geometry.beta - 2 * np.pi,
                                        panelized_geometry.beta)
     panelized_geometry.beta = np.where(panelized_geometry.beta < 0, panelized_geometry.beta + 2 * np.pi,
@@ -80,7 +86,6 @@ if __name__ == '__main__':
         axs[0, 0].plot([X[i], X[i + 1]], [Y[i], Y[i + 1]], 'k')
         axs[0, 0].plot([X[i]], [Y[i]], 'ro')
         axs[0, 0].plot([panelized_geometry.xC[i]], [panelized_geometry.yC[i]], 'bo')
-        axs[0, 0].text(panelized_geometry.xC[i], panelized_geometry.yC[i], str(i))
         if i == 0:
             axs[0, 0].plot([panelized_geometry.xC[i], panel_vector_X[i]], [panelized_geometry.yC[i], panel_vector_Y[i]],
                            'k', label='First Panel')
@@ -88,7 +93,8 @@ if __name__ == '__main__':
             axs[0, 0].plot([panelized_geometry.xC[i], panel_vector_X[i]], [panelized_geometry.yC[i], panel_vector_Y[i]],
                            'k', label='Second Panel')
         else:
-            axs[0, 0].plot([panelized_geometry.xC[i], panel_vector_X[i]], [panelized_geometry.yC[i], panel_vector_Y[i]], 'k')
+            axs[0, 0].plot([panelized_geometry.xC[i], panel_vector_X[i]], [panelized_geometry.yC[i], panel_vector_Y[i]],
+                           'k')
         axs[0, 0].plot([panel_vector_X[i]], [panel_vector_Y[i]], 'go')
     axs[0, 0].set_xlabel('X')
     axs[0, 0].set_ylabel('Y')
@@ -116,9 +122,13 @@ if __name__ == '__main__':
 
     # Cp Distribution
     axs[1, 0].set_title('Cp Distribution')
-    axs[1, 0].plot(theta, theoretical_Cp(theta), 'k', label='Theoretical')
-    axs[1, 0].plot(panelized_geometry.beta, Cp, 'ro', label='Panel Method')
-    axs[1, 0].set_xlabel('Theta [rad]')
+    axs[1, 0].plot(xfoil_cp_upp['x'], xfoil_cp_upp['Cp'], 'r', label='Upper Surface Xfoil')
+    axs[1, 0].plot(xfoil_cp_low['x'], xfoil_cp_low['Cp'], 'b', label='Lower Surface Xfoil')
+    axs[1, 0].plot(spm_CP_upp['x'], spm_CP_upp['Cp'], 'ro', label='Upper Surface SPM')
+    axs[1, 0].plot(spm_CP_low['x'], spm_CP_low['Cp'], 'bo', label='Lower Surface SPM')
+    axs[1, 0].legend()
+    axs[1, 0].invert_yaxis()
+    axs[1, 0].set_xlabel('x/c')
     axs[1, 0].set_ylabel('Cp')
     axs[1, 0].legend()
 
@@ -158,6 +168,3 @@ if __name__ == '__main__':
 
     plt.tight_layout()
     plt.show()
-
-    time_end = time.time()
-    print("Time: ", time_end - time_start)

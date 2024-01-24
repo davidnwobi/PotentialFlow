@@ -1,5 +1,6 @@
 import numpy as np
 from . import data_collections as dc
+import numba as nb
 
 
 def compute_geometric_integral(A, B, C, D, E, S):
@@ -70,7 +71,7 @@ def compute_panel_geometric_integrals(panel_geometry: dc.PanelizedGeometry):
     I = np.where(np.isnan(I) | np.isinf(I) | np.iscomplex(I), 0, I)
     J = np.where(np.isnan(J) | np.isinf(J) | np.iscomplex(J), 0, J)
     I[np.diag_indices_from(I)] = np.pi
-    J[np.diag_indices_from(J)] = np.pi
+    J[np.diag_indices_from(J)] = 0
     return I, J
 
 
