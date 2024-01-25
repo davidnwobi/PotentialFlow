@@ -24,8 +24,8 @@ def compute_grid_velocity_vortex(panelized_geometry, x, y, gamma, free_stream_ve
     Nxpj, Nypj = gi.compute_grid_geometric_integrals_vortex(panelized_geometry, x, y)
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)
-    np.append(X, X[0])
-    np.append(Y, Y[0])
+    X = np.append(X, X[0])
+    Y = np.append(Y, Y[0])
     shape = np.vstack((X, Y)).T
     u = np.zeros((len(x), len(y)))
     v = np.zeros((len(x), len(y)))

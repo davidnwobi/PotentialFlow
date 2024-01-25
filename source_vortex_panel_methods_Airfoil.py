@@ -4,7 +4,7 @@ import matplotlib.colors as colors
 from matplotlib import ticker
 from src.panel_generator import PanelGenerator
 from src.circulation import compute_ellipse_and_circulation
-from src.vortex_panel_methods_funcs import *
+from src.source_vortex_panel_methods_funcs import *
 from src.airfoil_generator import generate_four_digit_NACA
 from aeropy import xfoil_module as xf
 import numpy as np
@@ -56,9 +56,12 @@ if __name__ == '__main__':
     panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
     # %% VORTEX PANEL METHOD
-    V_normal, V_tangential, gamma, u, v = run_vortex_panel_method(panelized_geometry, V, AoA, x, y)
+    V_normal, V_tangential, gamma, lam, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
+                                                                              V=V, AoA=AoA, x=x, y=y)
     sumGamma = np.sum(gamma * panelized_geometry.S)
+    sumLambda = np.sum(lam * panelized_geometry.S)
     print('Sum of Vortex Circulation: ', sumGamma)
+    print('Sum of Source Strengths: ', sumLambda)
 
     # %% Pressure Coefficient for the grid
     local_v = np.sqrt(u ** 2 + v ** 2)
@@ -92,7 +95,7 @@ if __name__ == '__main__':
 
     # %% PLOTTING
     fig, axs = plt.subplots(2, 3, figsize=(25, 12), dpi=100)
-    fig.suptitle(f'Vortex Panel Method Results for NACA {airfoil} at {AoA} degrees AoA', fontsize=16)
+    fig.suptitle(f'Source Vortex Panel Method Results for NACA {airfoil} at {AoA} degrees AoA', fontsize=16)
     # Panel Geometry
     axs[0, 0].set_title('Panel Geometry')
     for i in range(len(panelized_geometry.S)):
@@ -198,6 +201,7 @@ if __name__ == '__main__':
     # Results Table
     axs[1, 2].axis('off')
     table_data = pd.DataFrame({
+        'Sum of Source Strengths': [round(sumLambda, 6)],
         "Sum of Vortex Circulation": [round(sumGamma, 6)],
         "cl (Calculated from CP)": [round(CL, 6)],
         'Circulation (Evaluated from grid velocities)': [round(circulation.circulation, 6)],

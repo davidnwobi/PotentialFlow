@@ -35,8 +35,8 @@ def compute_grid_velocity_source(panelized_geometry: dc.PanelizedGeometry, x: np
     Mxpj, Mypj = gi.compute_grid_geometric_integrals_source(panel_geometry=panelized_geometry, grid_x=x, grid_y=y)
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)
-    np.append(X, X[0])
-    np.append(Y, Y[0])
+    X = np.append(X, X[0])
+    X = np.append(Y, Y[0])
     shape = np.vstack((X, Y)).T
     u = np.zeros((len(x), len(y)))
     v = np.zeros((len(x), len(y)))

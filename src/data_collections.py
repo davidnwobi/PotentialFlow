@@ -11,6 +11,10 @@ SourcePanelMethodResults = namedtuple('PanelMethodResults',
 VortexPanelMethodResults = namedtuple('PanelMethodResults',
                                       ['V_normal', 'V_tangential', 'Vortex_Strengths', 'V_horizontal', 'V_vertical'])
 
+SourceVortexPanelMethodResults = namedtuple('SourceVortexPanelMethodResults',
+                                            ['V_normal', 'V_tangential', 'Source_Strengths', 'Circulation',
+                                             'V_horizontal', 'V_vertical'])
+
 
 class FlowFieldProperties(namedtuple("FlowField", ['x', 'y', 'u', 'v'])):
     """
