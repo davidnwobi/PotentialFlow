@@ -1,20 +1,23 @@
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import matplotlib.ticker as ticker
 from src.source_panel_methods_funcs import *
 import matplotlib.patches as patches
 from src.panel_generator import PanelGenerator
 from src.circulation import compute_ellipse_and_circulation
 from aeropy import xfoil_module as xf
+import src.data_collections as dc
 import numpy as np
 import pandas as pd
 
 if __name__ == '__main__':
     airfoil = '2412'
-    AoA = 45
+    AoA = 6
     res = None
     x_foil_cl = 0
     try:
-        res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=0, NACA=True, )
-        x_foil_cl = xf.find_coefficients(airfoil='naca' + airfoil, alpha=0, NACA=True, )['CL']
+        res = xf.find_pressure_coefficients(airfoil='naca' + airfoil, alpha=AoA, NACA=True, )
+        x_foil_cl = xf.find_coefficients(airfoil='naca' + airfoil, alpha=AoA, NACA=True, )['CL']
         xfoil_cp = pd.DataFrame(res)
         xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
         xfoil_cp_low = xfoil_cp[xfoil_cp['y'] < 0]
@@ -25,7 +28,7 @@ if __name__ == '__main__':
         xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
         xfoil_cp_low = xfoil_cp[xfoil_cp['y'] < 0]
     numB = len(xfoil_cp)
-    num_grid = 150
+    num_grid = 1500  # Change this if it is too slow or you run out of memory
     X_NEG_LIMIT = -0.5
     X_POS_LIMIT = 1.25
     Y_NEG_LIMIT = -0.5
@@ -33,9 +36,9 @@ if __name__ == '__main__':
 
     load = 'Circle2'  # Load circle or airfoil
 
-# %% THE ABOVE CODE DOES NOT PROVIDE THE RIGHT BOUNDARY POINTS FOR THE AIRFOIL. LOAD THE AIRFOIL DATA FROM A FILE
+    # %% THE ABOVE CODE DOES NOT PROVIDE THE RIGHT BOUNDARY POINTS FOR THE AIRFOIL. LOAD THE AIRFOIL DATA FROM A FILE
     # TODO: FIX THIS
-# %% PANEL METHOD GEOMETRY SETUP
+    # %% PANEL METHOD GEOMETRY SETUP
 
     XB, YB = np.loadtxt('naca2412.txt', unpack=True)
     V = 1
@@ -49,17 +52,19 @@ if __name__ == '__main__':
     panel_normal_vector_X = panelized_geometry.xC + panelized_geometry.S / 2 * np.cos(panelized_geometry.delta)
     panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
-# %% SOURCE PANEL METHOD
+    # %% SOURCE PANEL METHOD
     V_normal, V_tangential, lam, u, v = run_source_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
                                                                 x=x, y=y)
-    sumLambda = np.sum(lam)
+
+    print(u)
+    sumLambda = np.sum(lam * panelized_geometry.S)
     print(f'Sum of Source Strengths: {sumLambda}')
 
-# %% Pressure Coefficient for the grid
+    # %% Pressure Coefficient for the grid
     local_v = np.sqrt(u ** 2 + v ** 2)
     cp = 1 - (local_v / V) ** 2
 
-# %% Pressure Coefficient for the airfoil
+    # %% Pressure Coefficient for the airfoil
     panel_velocities = V_tangential ** 2
     Cp = 1 - panel_velocities / V ** 2
 
@@ -77,12 +82,12 @@ if __name__ == '__main__':
     CL = np.sum(CN * np.cos(AoA * np.pi / 180)) - np.sum(CA * np.sin(AoA * np.pi / 180))  # Lift coefficient
     CD = np.sum(CN * np.sin(AoA * np.pi / 180)) + np.sum(CA * np.cos(AoA * np.pi / 180))  # Drag coefficient
 
-# %% Compute circulation
+    # %% Compute circulation
     airfoil_ellipse = dc.Ellipse(0.5, 0, 0.6, 0.2)
     flowfieldproperties = dc.FlowFieldProperties(x=x, y=y, u=u, v=v)
     circulation = compute_ellipse_and_circulation(flowfieldproperties, airfoil_ellipse, 1000)
 
-# %% PLOTTING
+    # %% PLOTTING
     fig, axs = plt.subplots(2, 3, figsize=(25, 12), dpi=100)
     fig.suptitle(f'Source Panel Method Results for NACA {airfoil} at {AoA} Degrees Angle of Attack', fontsize=16)
     # Panel Geometry
@@ -133,8 +138,18 @@ if __name__ == '__main__':
 
     # Pressure Contours
     axs[0, 2].set_title('Pressure Contours')
-    cp_plot = axs[0, 2].contourf(x, y, cp, 100, cmap='jet')
-    plt.colorbar(cp_plot, ax=axs[0, 2], label="Pressure Coefficient")
+
+    x_m, y_m = np.meshgrid(x, y)
+    cp_plot = axs[0, 2].pcolor(x_m, y_m, cp, cmap='jet', norm=colors.SymLogNorm(linthresh=0.03, linscale=0.03,
+                                                                                vmin=cp.min(), vmax=cp.max()))
+    ratio = np.abs(cp.max() / cp.min())
+    num_ticks = 10
+
+    ticks = -np.flip(np.geomspace(0.05, np.abs(cp.min()), 7))[:-1]
+    ticks = np.append(ticks, np.geomspace(0.01, cp.max(), 3))
+    cbar = fig.colorbar(cp_plot, ax=axs[0, 2], label="Pressure Coefficient", ticks=ticks)
+    cbar.ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%0.2f'))
+
     axs[0, 2].fill(geometry.x, geometry.y, 'k')
 
     axs[0, 2].set_ylim(Y_NEG_LIMIT, Y_POS_LIMIT)

@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.colors as colors
+from matplotlib import ticker
 from src.panel_generator import PanelGenerator
 from src.circulation import compute_ellipse_and_circulation
 from src.vortex_panel_methods_funcs import *
@@ -10,7 +12,7 @@ import time
 
 if __name__ == '__main__':
     airfoil = '2412'
-    AoA = 45
+    AoA = 6
     res = None
     x_foil_cl = 0
     try:
@@ -26,7 +28,7 @@ if __name__ == '__main__':
         xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
         xfoil_cp_low = xfoil_cp[xfoil_cp['y'] <= 0]
 
-    num_grid = 150
+    num_grid = 1500  # Change this if it is too slow or you run out of memory
     X_NEG_LIMIT = -0.5
     X_POS_LIMIT = 1.25
     Y_NEG_LIMIT = -0.5
@@ -35,9 +37,9 @@ if __name__ == '__main__':
     load = 'Circle2'  # Load circle or airfoil
 
     time_start = time.time()
-# %% THE ABOVE CODE DOES NOT PROVIDE THE RIGHT BOUNDARY POINTS FOR THE AIRFOIL. LOAD THE AIRFOIL DATA FROM A FILE
+    # %% THE ABOVE CODE DOES NOT PROVIDE THE RIGHT BOUNDARY POINTS FOR THE AIRFOIL. LOAD THE AIRFOIL DATA FROM A FILE
 
-# %% PANEL METHOD GEOMETRY SETUP
+    # %% PANEL METHOD GEOMETRY SETUP
     XB, YB = np.loadtxt('naca2412.txt', unpack=True)
 
     numB = len(XB)
@@ -52,7 +54,7 @@ if __name__ == '__main__':
     panel_normal_vector_X = panelized_geometry.xC + panelized_geometry.S / 2 * np.cos(panelized_geometry.delta)
     panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
-# %% VORTEX PANEL METHOD
+    # %% VORTEX PANEL METHOD
     V_normal, V_tangential, gamma, u, v = run_vortex_panel_method(panelized_geometry, V, AoA, x, y)
     sumGamma = np.sum(gamma * panelized_geometry.S)
     print('Sum of Vortex Circulation: ', sumGamma)
@@ -61,7 +63,7 @@ if __name__ == '__main__':
     local_v = np.sqrt(u ** 2 + v ** 2)
     cp = 1 - (local_v / V) ** 2
 
-# %% Pressure Coefficient for the panels
+    # %% Pressure Coefficient for the panels
     panel_velocities = V_tangential ** 2
     Cp = 1 - panel_velocities / V ** 2
     vpm_CP = pd.DataFrame({
@@ -73,7 +75,7 @@ if __name__ == '__main__':
     vpm_CP_upp = vpm_CP[vpm_CP['y'] >= 0]
     vpm_CP_low = vpm_CP[vpm_CP['y'] <= 0]
 
-# %% Lift and Drag Coefficients
+    # %% Lift and Drag Coefficients
     CN = -Cp * np.sin(panelized_geometry.beta) * panelized_geometry.S  # Normal coefficient
     CA = -Cp * np.cos(panelized_geometry.beta) * panelized_geometry.S  # Axial coefficient
 
@@ -87,7 +89,7 @@ if __name__ == '__main__':
     time_end = time.time()
     print('Time elapsed: ', time_end - time_start)
 
-# %% PLOTTING
+    # %% PLOTTING
     fig, axs = plt.subplots(2, 3, figsize=(25, 12), dpi=100)
     fig.suptitle(f'Vortex Panel Method Results for NACA {airfoil} at {AoA} degrees AoA', fontsize=16)
     # Panel Geometry
@@ -97,13 +99,16 @@ if __name__ == '__main__':
         axs[0, 0].plot([X[i]], [Y[i]], 'ro', markersize=0.5)
         axs[0, 0].plot([panelized_geometry.xC[i]], [panelized_geometry.yC[i]], 'bo', markersize=0.5)
         if i == 0:
-            axs[0, 0].plot([panelized_geometry.xC[i], panel_normal_vector_X[i]], [panelized_geometry.yC[i], panel_normal_vector_Y[i]],
+            axs[0, 0].plot([panelized_geometry.xC[i], panel_normal_vector_X[i]],
+                           [panelized_geometry.yC[i], panel_normal_vector_Y[i]],
                            'k', label='First Panel')
         if i == 1:
-            axs[0, 0].plot([panelized_geometry.xC[i], panel_normal_vector_X[i]], [panelized_geometry.yC[i], panel_normal_vector_Y[i]],
+            axs[0, 0].plot([panelized_geometry.xC[i], panel_normal_vector_X[i]],
+                           [panelized_geometry.yC[i], panel_normal_vector_Y[i]],
                            'k', label='Second Panel')
         else:
-            axs[0, 0].plot([panelized_geometry.xC[i], panel_normal_vector_X[i]], [panelized_geometry.yC[i], panel_normal_vector_Y[i]],
+            axs[0, 0].plot([panelized_geometry.xC[i], panel_normal_vector_X[i]],
+                           [panelized_geometry.yC[i], panel_normal_vector_Y[i]],
                            'k')
         axs[0, 0].plot([panel_normal_vector_X[i]], [panel_normal_vector_Y[i]], 'go', markersize=0.5)
     axs[0, 0].set_xlabel('X')
@@ -135,8 +140,14 @@ if __name__ == '__main__':
 
     # Pressure Contours
     axs[0, 2].set_title('Pressure Contours')
-    cp_plot = axs[0, 2].contourf(x, y, cp, 100, cmap='jet')
-    plt.colorbar(cp_plot, ax=axs[0, 2], label="Pressure Coefficient")
+    x_m, y_m = np.meshgrid(x, y)
+    cp_plot = axs[0, 2].pcolor(x_m, y_m, cp, cmap='jet', norm=colors.SymLogNorm(linthresh=0.03, linscale=0.03,
+                                                                                vmin=cp.min(), vmax=cp.max()))
+    ticks = -np.flip(np.geomspace(0.05, np.abs(cp.min()), 7))
+    ticks = np.append(ticks, np.geomspace(0.01, cp.max(), 3))
+    cbar = fig.colorbar(cp_plot, ax=axs[0, 2], label="Pressure Coefficient", ticks=ticks)
+    cbar.ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%0.2f'))
+
     axs[0, 2].fill(geometry.x, geometry.y, 'k')
 
     axs[0, 2].set_ylim(Y_NEG_LIMIT, Y_POS_LIMIT)

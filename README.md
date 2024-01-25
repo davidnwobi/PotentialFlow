@@ -1,3 +1,6 @@
+## Acknowledgements
+Much thanks goes to [JoshTheEngineer](https://www.youtube.com/@JoshTheEngineer). His videos, derivations and code implementations were an invaluable resource for building this project especially the panel methods.
+
 # Potential Flow Visualizer
 
 This is a simple potential flow visualizer. The program allows you to experiment with the superposition of different potential flow fields. The program is written in Python using numpy and matplotlib for visualization.
@@ -163,4 +166,64 @@ flow.plot_velocity(x, y).show()
 ![img.png](images/StreamLinesKelvinOval.png)
 #### StreamPlot from Velocity
 ![img.png](images/StreamPlotKelvinOval.png)
+
+# Panel Methods
+### A Brief Overview
+Panel methods are a class of numerical methods used to solve potential flow problems. The idea is to represent the body as a collection of panels. Each of those panels are elementary flows. The flow field is calculated by superimposing the flow fields of each panel. However, to properly model the flow field, the panels must satisfy certain boundary conditions. 
+
+The boundary conditions are:
+- The flow velocity normal to the body must be zero
+- The Kutta-Joukowski condition must be satisfied
+
+With these boundary conditions, the strengths of each panel can be calculated. The main difference between the source panel method and the vortex panel method is the boundary condition. The source panel method satisfies the first boundary condition but cannot enforce the second. Hence, it can only model non-lifting flow. 
+
+On the other hand, The vortex panel method is able to enforce both boundary conditions.
+
+As a final note, there was a lot of math behind this. Most of the functions are just equations from the math. I would really recommend watching [JoshTheEngineer](https://www.youtube.com/channel/UC2csW4DZ8TtjzUtCrG4K3DQ)'s videos on the subject. They are very well explained and easy to follow.
+
+## Usage
+THe first thing you need to do is setup the geometry of the body. How you intend to do this is up to you, but you must provide a numpy array of x and y coordinates.
+
+```python 
+
+import numpy as np
+import src.data_collections as dc
+from src.panel_generator import PanelGenerator
+    XB, YB = np.loadtxt('naca2412.txt', unpack=True)
+    V = 1
+    geometry = dc.Geometry(XB, YB, AoA) # Create a geometry object
+    panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry) # Panelize the geometry
+    x, y = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num_grid), np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT,
+                                                                        num_grid) # Create a grid
+```
+This is the bare minimum to get this working
+
+### Source Panel Method
+```python
+from src.source_panel_methods_funcs import run_source_panel_method
+    V_normal, V_tangential, lam, u, v = run_source_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
+                                                                x=x, y=y)
+```
+With this, you are free to do whatever you want with the results. See [`source_panel_methods_Airfoil.py`](source_panel_methods_Airfoil.py) for an demonstration of how to use the results.
+
+### Vortex Panel Method
+
+it is the same as the source panel method except for the function call. 
+```python
+from src.vortex_panel_methods_funcs import run_vortex_panel_method
+    V_normal, V_tangential, gamma, u, v = run_vortex_panel_method(panelized_geometry=panelized_geometry, V=V, AoA=AoA,
+                                                                x=x, y=y)
+```
+See [`vortex_panel_methods_Airfoil.py`](vortex_panel_methods_Airfoil.py) for an demonstration of how to use the results.
+
+## Example Results: NACA 2412 Airfoil at 6 degrees AoA
+
+### Source Panel Method
+
+![Source-Panel-Method-2412-6-deg-AoA.png](images%2FSource-Panel-Method-2412-6-deg-AoA.png)
+
+### Vortex Panel Method
+
+![Vortex-Panel-Method-2412-6-deg-AoA.png](images%2FVortex-Panel-Method-2412-6-deg-AoA.png)
+
 
