@@ -3,7 +3,7 @@ Much thanks goes to [JoshTheEngineer](https://www.youtube.com/@JoshTheEngineer).
 
 # Potential Flow Visualizer
 
-This is a simple potential flow visualizer. The program allows you to experiment with the superposition of different potential flow fields. The program is written in Python using numpy and matplotlib for visualization.
+The first part of this project is a simple potential flow visualizer. The program allows you to experiment with the superposition of different potential flow fields. The program is written in Python using numpy and matplotlib for visualization.
 
 The basic elementary flows provided are:
 
