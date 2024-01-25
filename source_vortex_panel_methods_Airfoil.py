@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # %% THE ABOVE CODE DOES NOT PROVIDE THE RIGHT BOUNDARY POINTS FOR THE AIRFOIL. LOAD THE AIRFOIL DATA FROM A FILE
 
     # %% PANEL METHOD GEOMETRY SETUP
-    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=170, chord_length=1)
+    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=200, chord_length=1)
 
 
     numB = len(XB)
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     panel_normal_vector_Y = panelized_geometry.yC + panelized_geometry.S / 2 * np.sin(panelized_geometry.delta)
 
     # %% VORTEX PANEL METHOD
-    V_normal, V_tangential, gamma, lam, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
+    V_normal, V_tangential,  lam, gamma, u, v = run_source_vortex_panel_method(panelized_geometry=panelized_geometry,
                                                                               V=V, AoA=AoA, x=x, y=y)
     sumGamma = np.sum(gamma * panelized_geometry.S)
     sumLambda = np.sum(lam * panelized_geometry.S)

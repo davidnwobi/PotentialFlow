@@ -30,7 +30,7 @@ if __name__ == '__main__':
         xfoil_cp_upp = xfoil_cp[xfoil_cp['y'] >= 0]
         xfoil_cp_low = xfoil_cp[xfoil_cp['y'] <= 0]
 
-    num_grid = 500  # Change this if it is too slow or you run out of memory
+    num_grid = 50  # Change this if it is too slow or you run out of memory
     X_NEG_LIMIT = -0.5
     X_POS_LIMIT = 1.25
     Y_NEG_LIMIT = -0.5
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     # %% THE ABOVE CODE DOES NOT PROVIDE THE RIGHT BOUNDARY POINTS FOR THE AIRFOIL. LOAD THE AIRFOIL DATA FROM A FILE
 
     # %% PANEL METHOD GEOMETRY SETUP
-    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=170, chord_length=1)
+    XB, YB = generate_four_digit_NACA(num_NACA=airfoil, num_points=30, chord_length=1)
     numB = len(XB)
     V = 1
     geometry = dc.Geometry(XB, YB, AoA)
