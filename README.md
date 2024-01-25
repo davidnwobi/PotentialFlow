@@ -178,10 +178,10 @@ The boundary conditions are:
 With these boundary conditions, the strengths of each panel can be calculated.
 
 ## Usage
-THe first thing you need to do is setup the geometry of the body. How you intend to do this is up to you, but you must provide a numpy array of x and y coordinates.
+THe first thing you is setup the geometry of the body. How you intend to do this is up to you, but you must provide a numpy array of x and y coordinates.
 
 
-For the rest of this demontration, the NACA 2412 airfoil at an angle of attack of 6 degrees is used. The airfoil was generated using XFOIL.
+For the rest of this demontration, a NACA 2412 airfoil at an angle of attack of 6 degrees is used. The airfoil was first generated using XFOIL and later using the 'generate_four_digit_NACA' function in [`airfoil_generator.py`](src/airfoil_generator.py).
 ```python 
 
 import numpy as np
@@ -198,7 +198,9 @@ from src.panel_generator import PanelGenerator
 This is the bare minimum to get this working.
 
 ### Source Panel Method
-The elementary flow used is a source. THe airfoil is modelled as a collection of source panels whose strengths are constant along the panel but vary from panel to panel. Only the first boundary condition can be solved since there is no circulation. 
+The elementary flow used is a source. 
+The airfoil is modelled as a collection of source panels whose strengths are constant along the panel but vary from panel to panel.
+Only the first boundary condition can be solved since there is no circulation. V<sub>n,j</sub> = 0 is the equation solved for all panels.
 
 ```python
 from src.source_panel_methods_funcs import run_source_panel_method
@@ -207,11 +209,16 @@ from src.source_panel_methods_funcs import run_source_panel_method
 ```
 With this, you are free to do whatever you want with the results. See [`source_panel_methods_Airfoil.py`](source_panel_methods_Airfoil.py) for an demonstration of how to use the results.
 
+Note: lam is the strength of the source panels. It is a numpy array of length N where N is the number of panels.
+
 ![Source-Panel-Method-2412-6-deg-AoA.png](images%2FSource-Panel-Method-2412-6-deg-AoA.png)
 
 ### Vortex Panel Method
 
-The elementary flow used is a vortex. Here,the airfoil is modelled as a collection of vortex panels whose strengths are constant along the panel but vary from panel to panel. Both of the boundary conditions can be satisfied. The Kutta condition is satisfied by solving for γ(TE) = 0.
+The elementary flow used is a vortex. 
+Here,the airfoil is modelled as a collection of vortex panels whose strengths are constant along the panel but vary from panel to panel. 
+Both of the boundary conditions can be satisfied. V<sub>n,j</sub> = 0 is still the equation solved for across all panels but now the Kutta condition can be satisfied.
+The Kutta condition is satisfied by replacing an equation in the system of equations with γ(TE) = 0 i.e. γ<sub>1</sub> + γ<sub>N</sub> = 0
 
 As for the code, it is the same as the source panel method except for the function call.
 ```python
@@ -223,8 +230,9 @@ See [`vortex_panel_methods_Airfoil.py`](vortex_panel_methods_Airfoil.py) for an 
 
 ![Vortex-Panel-Method-2412-6-deg-AoA.png](images%2FVortex-Panel-Method-2412-6-deg-AoA.png)
 
-Now while the vortex panel method is able to model the lift force, it is not stable and depending on the airfoil and paneling, it can blow up.
-Now watch happens when we generate the same airfoil rather than using an XFOIL generated airfoil.
+Now while the vortex panel method is able to model the lift force, it is not always consistent and highly depends on the discretization of the airfoil. 
+Even with a well discretized XFOIL generated airfoil, the C<sub>p</sub> value oscillates slightly.
+Now, Watch happens when we generate the same airfoil rather than using an nicer airfoil. I'm not entirely sure why this happens, but it is something to look into further.
 ```python
 from src.airfoil_generator import generate_four_digit_NACA # Add this to imports
 
@@ -232,9 +240,23 @@ from src.airfoil_generator import generate_four_digit_NACA # Add this to imports
 ```
 ![Vortex-Panel-Method-2412-6-deg-AoA-Unsteady.png](images%2FVortex-Panel-Method-2412-6-deg-AoA-Unsteady.png)
 
+#### With a lower discretization
+
+![Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png](images%2FVortex-Panel-Method-2412-6-deg-AoA-Low-Res.png)
+
 ### Source Vortex Panel Method
 
-The elementary flows used are a source and a vortex. Each panel is made up of a source with constant strength along the panel but varies from panel to panel and a vortex with constant strength along the panel and along all panels. Once again both of the boundary conditions can be satisfied. To solve the system of equations, The Kutta condition is satisfied by solving for V~t1~ = -V~tN~ i.e. The first and last panel hav the same velocities.
+The elementary flows used are a source and a vortex. 
+Each panel is made up of: 
+- A source with a constant strength along the panel that varies from panel to panel.
+- A vortex with constant strength along the panel, with the same strength across all panels.
+
+Once again both of the boundary conditions can be satisfied. 
+In addition to solving the system of equations for the normal velocity, 
+the Kutta condition is satisfied by also solving the equation V<sub>t,1</sub> = -V<sub>t,N</sub> i.e. 
+the first and last panel have the same tangential velocities.
+
+The results are much more cleaner and can provide a more consistent picture of the lift force even with a poorly discretized airfoil.
 
 ```python
 from src.source_vortex_panel_methods_funcs import run_source_vortex_panel_method
@@ -244,11 +266,11 @@ from src.source_vortex_panel_methods_funcs import run_source_vortex_panel_method
 
 ![Source-Vortex-Panel-Method-2412-6-deg-AoA.png](images%2FSource-Vortex-Panel-Method-2412-6-deg-AoA.png)
 
+#### With a lower discretization
 
+![Source-Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png](images%2FSource-Vortex-Panel-Method-2412-6-deg-AoA-Low-Res.png)
 
-
-
-
+Much better (in terms of consistency) than the vortex panel method.
 
 
 
