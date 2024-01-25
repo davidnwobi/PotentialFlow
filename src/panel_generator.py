@@ -27,10 +27,12 @@ class PanelGenerator:
         panel_orientation_angle = np.where(panel_orientation_angle < 0, panel_orientation_angle + 2 * np.pi,
                                            panel_orientation_angle)  # Add 2pi to the panel angle if it is negative
         panel_normal_angle = panel_orientation_angle + (
-                    np.pi / 2)  # delta [rad] (angle between x-axis and outside panel normal)
+                np.pi / 2)  # delta [rad] (angle between x-axis and outside panel normal)
 
         beta = panel_normal_angle - (
                 geometry.AoA * (np.pi / 180))  # Angle between freestream and outsidepanel normal [rad]
+        beta = np.where(beta > 2 * np.pi, beta - 2 * np.pi, beta)
+        beta = np.where(beta < 0, beta + 2 * np.pi, beta)
 
         panel_geometry = dc.PanelizedGeometry(panel_length, panel_orientation_angle, panel_normal_angle, beta,
                                               control_points_x_cor, control_points_y_cor)

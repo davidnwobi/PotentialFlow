@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from src.panel_generator import PanelGenerator
-from src.geometric_integrals import compute_panel_geometric_integrals
+from src.geometric_integrals import compute_panel_geometric_integrals_source
 import src.data_collections as dc
 from src.flow_field import *
 from src.source_panel_methods_funcs import *
@@ -12,8 +12,8 @@ import time
 if __name__ == '__main__':
     time_start = time.time()
     freeze_support()
-    numB = 50  # Number of boundary points
-    num_grid = 50
+    numB = 500  # Number of boundary points
+    num_grid = 1000
     X_NEG_LIMIT = -2
     X_POS_LIMIT = 2
     Y_NEG_LIMIT = -2
@@ -34,15 +34,25 @@ if __name__ == '__main__':
     geometry = dc.Geometry(XB, YB, AoA)
     panelized_geometry = PanelGenerator.compute_geometric_quantities(geometry)
 
-    I, J = compute_panel_geometric_integrals(panelized_geometry)
+    panel_time_start = time.time()
+    I, J = compute_panel_geometric_integrals_source(panelized_geometry)
+    panel_time_end = time.time()
+    print('Time to compute panels: ', panel_time_end - panel_time_start)
+
+    gamma_time_start = time.time()
     gamma = compute_source_strengths(panelized_geometry, V, I)
+    gamma_time_end = time.time()
+    print('Time to compute gamma: ', gamma_time_end - gamma_time_start)
     sumLambda = sum(gamma * panelized_geometry.S)  # Check sum of source panel strengths
     print("Sum of L: ", sumLambda)
 
-    V_normal, V_tangential = compute_panel_velocities(panelized_geometry, gamma, V, I, J)
+    V_normal, V_tangential = compute_panel_velocities_source(panelized_geometry, gamma, V, I, J)
     x, y = np.linspace(X_NEG_LIMIT, X_POS_LIMIT, num_grid), np.linspace(Y_NEG_LIMIT, Y_POS_LIMIT, num_grid)  # Create grid
 
-    u, v = compute_grid_velocity(panelized_geometry, x, y, gamma, V, AoA)
+    velocity_time_start = time.time()
+    u, v = compute_grid_velocity_source(panelized_geometry, x, y, gamma, V, AoA)
+    velocity_time_end = time.time()
+    print('Time to compute grid velocity: ', velocity_time_end - velocity_time_start)
 
     X = panelized_geometry.xC - panelized_geometry.S / 2 * np.cos(panelized_geometry.phi)
     Y = panelized_geometry.yC - panelized_geometry.S / 2 * np.sin(panelized_geometry.phi)

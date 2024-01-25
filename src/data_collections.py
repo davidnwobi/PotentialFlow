@@ -2,6 +2,14 @@ from collections import namedtuple
 import numpy as np
 from dataclasses import dataclass
 import typing as tp
+from numba import float64, int64, boolean
+from numba.experimental import jitclass
+
+SourcePanelMethodResults = namedtuple('PanelMethodResults',
+                                      ['V_normal', 'V_tangential', 'Source_Strengths', 'V_horizontal', 'V_vertical'])
+
+VortexPanelMethodResults = namedtuple('PanelMethodResults',
+                                      ['V_normal', 'V_tangential', 'Vortex_Strengths', 'V_horizontal', 'V_vertical'])
 
 
 class FlowFieldProperties(namedtuple("FlowField", ['x', 'y', 'u', 'v'])):
@@ -78,7 +86,14 @@ class EllipseProperties(namedtuple("BodyProperties", ['x_cor', 'y_cor', 'u', 'v'
     pass
 
 
-@dataclass
+specGeometry = [
+    ('x', float64[:]),
+    ('y', float64[:]),
+    ('AoA', float64),
+]
+jitclass(specGeometry)
+
+
 class Geometry:
     """
     A class that represents a geometry.
@@ -99,7 +114,23 @@ class Geometry:
     y: np.ndarray
     AoA: float
 
-@dataclass
+    def __init__(self, x, y, AoA):
+        self.x = x
+        self.y = y
+        self.AoA = AoA
+
+
+specPanelizedGeometry = [
+    ('S', float64[:]),
+    ('phi', float64[:]),
+    ('delta', float64[:]),
+    ('beta', float64[:]),
+    ('xC', float64[:]),
+    ('yC', float64[:]),
+]
+
+
+@jitclass(specPanelizedGeometry)
 class PanelizedGeometry():
     """
     A class that represents a panelized geometry.
@@ -132,3 +163,11 @@ class PanelizedGeometry():
     beta: np.ndarray
     xC: np.ndarray
     yC: np.ndarray
+
+    def __init__(self, S, phi, delta, beta, xC, yC):
+        self.S = S
+        self.phi = phi
+        self.delta = delta
+        self.beta = beta
+        self.xC = xC
+        self.yC = yC
